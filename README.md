@@ -2,15 +2,9 @@
 
 1) Hello World! on TS;
 
-<<<<<<< HEAD
-2) Enum;
-=======
 1.1) ПЕРЕМЕННЫЕ
 
 2)Enum;
->>>>>>> class
-
-3) :void;
 
 4) assertion (приведение к типу);
 
