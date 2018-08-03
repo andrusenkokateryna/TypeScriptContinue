@@ -1,5 +1,15 @@
 "use strict";
-//=================== #1
+//=================== #1====
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var array = ['hello', ' ', 'world!'];
 for (var _i = 0, array_1 = array; _i < array_1.length; _i++) {
     var val = array_1[_i];
@@ -23,7 +33,7 @@ userInfo = ["Tom", 28];
 // использование кортежа
 console.log(userInfo[1]); // 28
 userInfo[1] = 37;
-//====================Enum=======
+//====================Enum===#2====
 var Color;
 (function (Color) {
     Color[Color["Red"] = 1] = "Red";
@@ -66,7 +76,7 @@ var sums = 36.6;
 if (typeof sum === "number") {
     console.log(sums / 6);
 }
-//=====assertion=====приведение к типу====
+//=====assertion=====приведение к типу====#4==
 var someValue = "this is a string";
 var strLength = someValue.length;
 console.log(strLength); //16
@@ -87,7 +97,7 @@ catch (e) {
     console.log("Oh well.");
     console.log(e);
 }
-//=========ПЕРЕМЕННЫЕ=======================
+//=========ПЕРЕМЕННЫЕ====#1.1===================
 //var
 /*Доступна в любой части функции, в которой она определена.
 
@@ -160,7 +170,7 @@ function print(){
 переназначения переменной. Использование const делает код более предсказуемым и понятным
 при объяснении
 потока данных.*/
-//=========FUNCTION==========================
+//=========FUNCTION======#5====================
 // определение функции
 function add(a, b) {
     return a + b;
@@ -236,7 +246,7 @@ console.log(result01); // 9
 var result02 = adds("5", "4");
 console.log(result02); // 54
 //Тип функции и стрелочные функции
-//====Тип функции
+//====Тип функции==#6
 function summ(x, y) {
     return x + y;
 }
@@ -270,25 +280,30 @@ console.log(mathOp(10, 20, operationFunc)); // 200
 // которая принимает два параметра типа number и возвращает число. 
 //Фактически тем самым мы можем передавать функции обратного вызова, например,
 // при генерации событий, когда в ответ на некоторое действие срабатывает другая функция.
-//========Стрелочные функции====
+//========Стрелочные функции===#7=
 var suma = function (x, y) { return x + y; };
 var result03 = suma(15, 35); // 50
 console.log(result03);
-//Тип параметров можно опускать:
-var sumb = function (x, y) { return x + y; };
-var result04 = sumb(15, 25); // 40
+/*//Тип параметров можно опускать:
+
+let sumb = (x, y) => x + y;
+  
+let result04 = sumb(15, 25); // 40
 console.log(result04);
+*/
 //Если стрелочная функция не требует параметров, то используются пустые круглые скобки. 
 //Если передается только один параметр, то скобки можно опустить:
-var square = function (x) { return x * x; };
-var hello = function () { return "hello world"; };
+/*let square = x => x * x;
+let hello = () => "hello world"
+  
 console.log(square(5)); // 25
-console.log(hello()); // hello world
+console.log(hello());   // hello world
+*/
 //Если тело функции представляет множество выражений, а не просто одно выражение, 
 //как в примере выше, тогда можно опять же заключить все выражения в фигурные скобки:
 var sumc = function (x, y) {
     x *= 2; // 15*2
-    return x + y;
+    return x + y; //30+35
 };
 var result05 = sumc(15, 35); // 65
 console.log(result05);
@@ -300,4 +315,337 @@ function mathOpr(x, y, operation) {
 }
 console.log(mathOp(10, 20, function (x, y) { return x + y; })); // 30 
 console.log(mathOp(10, 20, function (x, y) { return x * y; })); // 200 
+//===========ОБЪЕКТНО-ОРИЕНТИРОВАННОЕ ПРОГРАММИРОВАНИЕ==========
+//..........................Классы....#8.............
+/*class User {
+ 
+    id1: number;
+    name1: string;
+    getInfo(): string {
+        return "id:" + this.id1 + " name:" + this.name1;
+    }
+}
+
+let tomm: User = new User();
+tomm.id1 = 1;
+tomm.name1 = "Tom";
+console.log(tomm.getInfo());
+ 
+let aliCe: User = new User();
+aliCe.id1 = 2;
+aliCe.name1 = "Alice";
+console.log(aliCe.getInfo());*/
+/////////////////////////////////////////////////////////////
+//специальные функции - конструкторы, которые определяются с помощью ключевого слова 
+//constructor. Конструкторы выполняют начальную инициализацию объекта. 
+var Users = /** @class */ (function () {
+    function Users(userId, userName) {
+        this.id = userId;
+        this.name = userName;
+    }
+    Users.prototype.getInfo = function () {
+        return "id:" + this.id + " name:" + this.name;
+    };
+    return Users;
+}());
+var tom = new Users(1, "Tom");
+console.log(tom.getInfo());
+tom.id = 4;
+var alice = new Users(2, "Alice");
+console.log(alice.getInfo());
+//Статические свойства и функции====#9==============
+//Кроме обычных свойств и функций класс может иметь статические. Для использования 
+//статических функций и свойств не надо создавать объект класса.
+//Статические функции и свойства определяются с помощью ключевого слова static:
+var Operation = /** @class */ (function () {
+    function Operation() {
+    }
+    Operation.getSquare = function (radius) {
+        return (Operation.PI) * radius * radius;
+    };
+    Operation.PI = 3.14;
+    return Operation;
+}());
+var result06 = Operation.getSquare(30);
+console.log("Площадь круга с радиусом 30 равна " + result06);
+var result2 = Operation.PI * 30 * 30;
+console.log(result2); // 2826
+//==============Модификаторы доступа===#10==========
+// В TypeScript три модификатора: public, protected и private.
+/*class User {
+     
+    name: string;
+    year: number;
+}
+Будет эквивалентно:
+class User {
+     
+    public name: string;
+    public year: number;
+}
+*/
+//private
+var User2 = /** @class */ (function () {
+    function User2(name, age) {
+        this._name = name;
+        this._year = this.setYear(age);
+    }
+    User2.prototype.displayYear = function () {
+        console.log("Год рождения: " + this._year);
+    };
+    User2.prototype.displayName = function () {
+        console.log("name: " + this._name);
+    };
+    User2.prototype.setYear = function (age) {
+        return new Date().getFullYear() - age;
+    };
+    return User2;
+}());
+var toms = new User2("Tom", 24);
+toms.displayName();
+toms.displayYear();
+// console.log(toms._name); // нельзя обратиться, так как _name - private
+// toms.setYear(45); // нельзя обратиться, так как функция - private
+//protected
+//Модификатор protected во многом аналогичен private - свойства и методы 
+//с данным модификатором не видны из вне, но к ним можно 
+//обратиться из классов-наследников:
+var Userr = /** @class */ (function () {
+    function Userr(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    Userr.prototype.displayInfo = function () {
+        console.log("name: " + this.name + "; age: " + this.age);
+    };
+    return Userr;
+}());
+var Employee = /** @class */ (function (_super) {
+    __extends(Employee, _super);
+    function Employee(name, age, company) {
+        var _this = _super.call(this, name, age) || this;
+        _this.company = company;
+        return _this;
+    }
+    Employee.prototype.showData = function () {
+        console.log("Age: " + this.age);
+        //console.log("Name: " + this.name); // не работает, так как name - private
+    };
+    return Employee;
+}(Userr));
+//Определение свойств через конструктор==#11
+var User3 = /** @class */ (function () {
+    function User3(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    User3.prototype.displayInfo = function () {
+        console.log("name: " + this.name + "; age: " + this.age);
+    };
+    return User3;
+}());
+function alerto() {
+    alert('hello'); //не выведется
+}
+//alerto()// сработает
+//==Методы доступа и readonly-свойства=#12==
+//Использование аксессоров или методов доступа позволяет управлять тем, как значение 
+//устанавливается и как оно возвращается. В частности, мы можем написать  класс 
+//с использованием акссессоров следующим образом:
+/*class Usero {
+ 
+    private _name01: string
+
+    public get name(): string {
+        return this._name01;
+    }
+ 
+    public set name(n: string) {
+        this._name01 = n;
+    }
+}
+ 
+let tomos = new Usero();
+tomos.name = "Rom";   // срабатывает set-метод
+console.log(tomos.name);  // срабатывает get-метод
+*/
+//Свойства только для чтения
+//Ключевое слово readonly позволяет определить свойства, 
+//которые доступны только для чтения:
+var Userq = /** @class */ (function () {
+    function Userq(userId, userName) {
+        this.id = userId;
+        this.name = userName;
+    }
+    return Userq;
+}());
+var tome = new Userq(2, "Tod");
+console.log(tome.id, tome.name);
+//tome.id=34;    // Ошибка - так как id - только для чтения
+//Подобное определение свойств для чтения можно сократить следующим образом:
+/*class User {
+ 
+    name: string;
+    constructor(readonly id: number, userName: string) {
+        this.name = userName;
+    }
+}*/
+//====Наследование. Абстрактные классы=====#13
+//Одним из ключевых моментов объектно-ориентированной парадигмы является наследование.
+// В TypeScript наследование реализуется с помощью ключевого слова extends (как в Java):
+//Если подкласс определяет свой конструктор, то в нем должен быть вызван конструктор 
+//базового класса с помощью ключевого слова super:
+var User21 = /** @class */ (function () {
+    function User21(userName) {
+        this.name = userName;
+    }
+    User21.prototype.getInfo = function () {
+        console.log("Имя: " + this.name);
+    };
+    return User21;
+}());
+var Employee21 = /** @class */ (function (_super) {
+    __extends(Employee21, _super);
+    function Employee21(userName, empCompany) {
+        var _this = _super.call(this, userName) || this;
+        _this.company = empCompany;
+        return _this;
+    }
+    Employee21.prototype.work = function () {
+        console.log(this.name + " работает в компании " + this.company);
+    };
+    return Employee21;
+}(User21));
+var bill = new Employee21("Bill", "Microsoft");
+bill.getInfo();
+bill.work();
+console.log(bill);
+var Useru = /** @class */ (function () {
+    function Useru() {
+    }
+    return Useru;
+}());
+var Employeeu = /** @class */ (function (_super) {
+    __extends(Employeeu, _super);
+    function Employeeu(empsCompany) {
+        if (empsCompany === void 0) { empsCompany = 'Apple'; }
+        var _this = _super.call(this) || this;
+        _this.company = empsCompany;
+        return _this;
+    }
+    Employeeu.prototype.add = function () {
+        console.log(this.company + ' ' + "and this good");
+    };
+    return Employeeu;
+}(Useru));
+var max = new Employeeu();
+max.add();
+//Переопределение методов==#14
+//Также производные классы могут переопределять методы базовых классов:
+/*class User4 {
+  
+    name: string;
+    constructor(userName: string) {
+  
+        this.name = userName;
+    }
+    getInfo(): void {
+        console.log("Имя: " + this.name);
+    }
+}
+
+class Employe extends User4 {
+  
+    company: string;
+    constructor(userName: string, emCompany: string) {
+  
+        super(userName);
+        this.company = emCompany;
+    }
+    getInfo(): void {
+        console.log("Имя: " + this.name);
+        console.log("Работает в компании: " + this.company);
+    }
+}
+let billi: Employe = new Employe("Billy", "Apple");
+bill.getInfo();*/
+//можем с помощью ключевого слова super вызвать реализацию  метода getInfo() 
+//из базового класса:
+var User4 = /** @class */ (function () {
+    function User4(userName) {
+        this.name = userName;
+    }
+    User4.prototype.getInfo = function () {
+        console.log("Имя: " + this.name);
+    };
+    return User4;
+}());
+var User = /** @class */ (function () {
+    function User(userName) {
+        this.name = userName;
+    }
+    User.prototype.getInfo = function () {
+        console.log("Имя: " + this.name);
+    };
+    return User;
+}());
+var Employe = /** @class */ (function (_super) {
+    __extends(Employe, _super);
+    function Employe(userName, empCompany) {
+        var _this = _super.call(this, userName) || this;
+        _this.company = empCompany;
+        return _this;
+    }
+    Employe.prototype.getInfo = function () {
+        _super.prototype.getInfo.call(this);
+        console.log("Работает в компании: " + this.company);
+    };
+    return Employe;
+}(User4));
+//===Абстрактные классы===#15==
+//Абстрактные классы представляют классы, определенные с ключевым словом abstract.
+//не можем создать напрямую объект абстрактного класса, используя его конструктор.
+var Figur = /** @class */ (function () {
+    function Figur() {
+    }
+    return Figur;
+}());
+// let someFigure = new Figur()    // Ошибка!
+//абстрактные классы описывают сущности, которые в реальности не имеют
+// конкретного воплощения.
+//общее название с общим функционалом(деревья: липа, дуб, ясень)
+//В данном случае абстрактный класс определяет метод getArea(), который вычисляет 
+//площадь фигуры. Класс прямоугольника определяет свою реализацию для этого метода.
+//Однако в данном случае метод getArea в базовом классе не выполняет никакой 
+//полезной работы, так как у абстрактной фигуры не может быть площади. 
+//И в этом случае подобный метод лучще определить как абстрактный:
+var Figure = /** @class */ (function () {
+    function Figure() {
+    }
+    Figure.prototype.getArea = function () {
+        console.log("Not Implemented ");
+    };
+    return Figure;
+}());
+var Rectangle = /** @class */ (function (_super) {
+    __extends(Rectangle, _super);
+    function Rectangle(width, height) {
+        var _this = _super.call(this) || this;
+        _this.width = width;
+        _this.height = height;
+        return _this;
+    }
+    Rectangle.prototype.getArea = function () {
+        var square = this.width * this.height;
+        console.log("area =", square);
+    };
+    return Rectangle;
+}(Figure));
+var someFigure = new Rectangle(20, 30);
+someFigure.getArea(); // area = 600
+var someFigure1 = new Rectangle(30, 30);
+someFigure1.getArea(); // area = 900
+//Если класс содержит абстрактные методы, то такой класс должен быть абстрактным. 
+//Кроме того, при наследовании производные классы обязаны реализовать 
+//все абстрактные методы.
 //# sourceMappingURL=index.js.map
