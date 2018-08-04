@@ -621,6 +621,7 @@ console.log(bill)
 
 class Useru {
     name: string;
+
 }
   
 class Employeeu extends Useru {
@@ -755,3 +756,289 @@ someFigure1.getArea();   // area = 900
 //Кроме того, при наследовании производные классы обязаны реализовать 
 //все абстрактные методы.
   
+//========Интерфейсы====================
+//Интерфейсы объектов
+//============================================
+//Интерфейс определяет свойства и методы, которые объект должен реализовать.
+//Интерфейсы определяются с помощью ключевого слова interface.
+
+interface IUser {
+    id: number;
+    name: string;
+}
+
+let employee: IUser = {
+     
+    id: 1, 
+    name: "Dom"
+}
+console.log("id: " + employee.id);
+console.log("name: " + employee.name);
+
+//По сути employee - обычный объект за тем исключением, что он имеет тип IUser.
+//employee реализует интерфейс IUser. 
+//employee должен реализовать все свойства и методы интерфейса IUser
+//=================================================================
+//=================================================================
+//Параметры методов и функций также могут представлять интерфейсы:
+
+interface IUser1 {
+    id: number;
+    name: string;
+}
+let employeee: IUser1 = {
+     
+    id: 2, 
+    name: "Alice"
+}
+ 
+function getEmployeeInfo(user: IUser1): void {
+ 
+    console.log("id: " + user.id);
+    console.log("name: " + user.name)
+}
+ 
+getEmployeeInfo(employeee);
+
+//В этом случае аргумент, который передается в функцию, должен представлять 
+//объект или класс, который реализует соответствующий интерфейс.
+//=============================================================
+//И также можно возвращать объекты интерфейса:
+
+interface IUser2 {
+    id: number;
+    name: string;
+}
+function buildUser(userId: number, userName: string): IUser2 {
+ 
+    return { id: userId, name: userName };
+}
+ 
+let newUser = buildUser(3, "Bill");
+console.log("id: " + newUser.id);
+console.log("name: " + newUser.name);
+
+
+//==Необязательные свойства и свойства только для чтения==
+
+//============================================================
+//============================================================
+//При определении интерфейса мы можем задать некоторые свойства как необязательные
+// с помощью знака вопроса.
+
+interface IUser3 {
+    id: number;
+    name: string;
+    age?: number;//Свойство age помечено как необязательное, поэтому 
+    			  //его можно не определять в объектах.
+}
+let employee3: IUser3 = {
+     
+    id: 1, 
+    name: "Alicon",
+    age: 23
+}
+let manager: IUser3 = {
+     
+    id: 2, 
+    name: "Tom"
+}
+
+console.log('id:' + employee3.id );
+console.log('age:' + employee3.age);
+
+//интерфейс может содержать свойства только для чтения, значение которых нельзя изменять.
+// с помощью ключевого слова readonly:
+
+interface Point {
+    readonly x: number;
+    readonly y: number;
+}
+let p: Point = { x: 10, y: 20 };
+console.log(p);
+// p.x = 5; // Ошибка - свойство доступно только для чтения
+//=============================================================
+//.....................Определение методов..........................
+//Кроме свойств интерфейсы могут определять функции:
+
+interface IUser4 {
+    id: number;
+    name: string;
+    getFullName(surname: string): string;
+}
+let employee4: IUser4 = {
+     
+    id: 1, 
+    name: "Alice",
+    getFullName : function (surname: string): string {
+        return this.name + " " + surname;
+    }
+}
+ 
+let fullName = employee4.getFullName("Tompson");
+console.log(fullName); // Alice Tompson
+//Oбъект, который реализует интерфейс, также обязан реализовать определенную в интерфейсе 
+//функцию с тем же набором параметров и тем типом выходного результата. 
+//В данном случае функция getFullName() в качестве параметра принимает строку 
+//и возвращает строку, осуществляя конкатенацию имени и фамилии.
+
+//.....................Интерфейсы классов................................
+//Интерфейсы могут быть реализованы не только объектами, но и классами. 
+//Для этого используется ключевое слово implements:
+
+interface IUser5 {
+    id: number;
+    name: string;
+    getFullName5(surname: string): string;
+}
+
+class User5 implements IUser5{
+ 
+    id: number;
+    name: string;
+    age: number;
+    constructor(userId: number, userName: string, userAge: number) {
+ 
+        this.id = userId;
+        this.name = userName;
+        this.age = userAge;
+    }
+
+    getFullName5(surname: string): string {
+ 
+        return this.name + " " + surname;
+    }
+}
+ 
+let dom = new User5(1, "Dom", 23);
+console.log(dom.getFullName5("Simpson"));
+
+//Класс User5 реализует интерфейс IUser5. В этом случае класс User5 обязан определить 
+//все те же свойства и функции, которые есть в IUser5.
+//===================================================
+//При этом объект dom является как объектом User5, так и объектом IUser5:
+/*let dom :IUser = new User(1, "Tom", 23);
+//или
+let dom :User = new User(1, "Tom", 23);*/
+//==============================================================
+//==============================================================
+//......................Наследование интерфейсов.........................
+
+interface IMovable {
+ 
+    speed: number;
+    move(): void;
+}
+interface ICar extends IMovable {
+ 
+    fill(): void;
+}
+class Car implements ICar {
+ 
+    speed: number;
+
+    move(): void {
+ 
+        console.log("Машина едет со скоростью " + this.speed + " км/ч");
+    }
+ 
+    fill(): void {
+ 
+        console.log("Заправляем машину топливом");
+    }
+}
+ 
+let auto = new Car();
+auto.speed = 60;
+auto.fill();
+auto.move();
+
+//После наследования интерфейс ICar будет также иметь все те свойства и функции, 
+//которые определены в IMovable. И тогда, класс Car, реализующий интерфейс ICar, 
+//должен будет реализовать также и свойства и методы интерфейса IMovable.
+
+//............................Интерфейсы функций.............................
+//Интерфейсы функций содержат определение типа функции. Затем они должны быть реализованы 
+//объектом, который представляет функцию данного типа:
+
+interface FullNameBuilder {
+    (name: string, surname: string): string;
+}
+ 
+let simpleBuilder: FullNameBuilder = function (name:string, surname: string): string {
+        return "Mr. " + name + " " + surname;
+}
+ 
+let fullName1 = simpleBuilder("Bob", "Simpson");
+console.log(fullName1); // Mr. Bob Simpson
+
+//Здесь определен интерфейс FullNameBuilder, который лишь содержит сигнатуру функции. 
+//Далее определяется переменная simpleBuilder, которая имеет тип FullNameBuilder 
+//и поэтому должна представлять функцию с данной сигнатурой.
+//....................Интерфейсы массивов.....................
+//Интерфейсы массивов описывают объекты, к которым можно обращаться по индексу, как,
+// например, к массивам
+
+interface StringArray {
+    [index: number]: string;
+}
+ 
+let phones: StringArray;
+phones = ["iPhone 7", "HTC 10", "HP Elite x3"];
+ 
+let myPhone: string = phones[0];
+console.log(myPhone);
+//Здесь определен интерфейс StringArray, который содержит сигнатуру массива. 
+//Эта сигнатура указывает, что объект, который реализует StringArray, 
+//может индексироваться с помощью чисел (объекта типа number). И, кроме того,
+// данный объект должен хранить объекты типа string, то есть строки.
+
+//Выше индекс представлял тип number. 
+//Но мы можем использовать для индексации и тип string:
+interface Dictionary {
+    [index: string]: string;
+}
+ 
+var colors: Dictionary = {};
+colors["red"] = "#ff0000";
+colors["green"] = "#00ff00";
+colors["blue"] = "#0000ff";
+ 
+console.log(colors["red"]);
+
+//.............Гибридные интерфейсы..............
+//Интерфейсы могут сочетать различные стили, могут применяться сразу как
+// к определению объекта, так и к определению функции:
+
+
+interface PersonInfo {
+    (name: string, surname: string):void;
+    fullName: string;
+    password: string;
+    authenticate(): void;
+}
+
+function personBuilder(): PersonInfo {
+ 
+    let person = <PersonInfo>function (name: string, surname: string): void{
+        person.fullName = name + " " + surname;
+    };
+    person.authenticate = function () {
+        console.log(person.fullName + " входит в систему с паролем " + person.password);
+    };
+    return person;
+}
+ 
+let tjom = personBuilder();
+tjom("Tom", "Simpson");
+tjom.password = "qwerty"; 
+tjom.authenticate();
+
+//Тип функции, определяемый в таком гибридном интерфейсе, как правило, 
+//выступает в роли конструктора объекта. В данном случае такой конструктор имеет тип 
+//(name: string, surname: string):void;.
+
+//А функция, которая представляет данный интерфейс 
+//(в данном случае - функция personBuilder), реализует эту функцию конструктора, 
+//и также может использовать другие свойства и методы, которые были определены 
+//в интерфейсе.

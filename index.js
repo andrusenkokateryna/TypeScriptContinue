@@ -645,7 +645,109 @@ var someFigure = new Rectangle(20, 30);
 someFigure.getArea(); // area = 600
 var someFigure1 = new Rectangle(30, 30);
 someFigure1.getArea(); // area = 900
-//Если класс содержит абстрактные методы, то такой класс должен быть абстрактным. 
-//Кроме того, при наследовании производные классы обязаны реализовать 
-//все абстрактные методы.
+var employee = {
+    id: 1,
+    name: "Dom"
+};
+console.log("id: " + employee.id);
+console.log("name: " + employee.name);
+var employeee = {
+    id: 2,
+    name: "Alice"
+};
+function getEmployeeInfo(user) {
+    console.log("id: " + user.id);
+    console.log("name: " + user.name);
+}
+getEmployeeInfo(employeee);
+function buildUser(userId, userName) {
+    return { id: userId, name: userName };
+}
+var newUser = buildUser(3, "Bill");
+console.log("id: " + newUser.id);
+console.log("name: " + newUser.name);
+var employee3 = {
+    id: 1,
+    name: "Alicon",
+    age: 23
+};
+var manager = {
+    id: 2,
+    name: "Tom"
+};
+console.log('id:' + employee3.id);
+console.log('age:' + employee3.age);
+var p = { x: 10, y: 20 };
+console.log(p);
+var employee4 = {
+    id: 1,
+    name: "Alice",
+    getFullName: function (surname) {
+        return this.name + " " + surname;
+    }
+};
+var fullName = employee4.getFullName("Tompson");
+console.log(fullName); // Alice Tompson
+var User5 = /** @class */ (function () {
+    function User5(userId, userName, userAge) {
+        this.id = userId;
+        this.name = userName;
+        this.age = userAge;
+    }
+    User5.prototype.getFullName5 = function (surname) {
+        return this.name + " " + surname;
+    };
+    return User5;
+}());
+var dom = new User5(1, "Dom", 23);
+console.log(dom.getFullName5("Simpson"));
+var Car = /** @class */ (function () {
+    function Car() {
+    }
+    Car.prototype.move = function () {
+        console.log("Машина едет со скоростью " + this.speed + " км/ч");
+    };
+    Car.prototype.fill = function () {
+        console.log("Заправляем машину топливом");
+    };
+    return Car;
+}());
+var auto = new Car();
+auto.speed = 60;
+auto.fill();
+auto.move();
+var simpleBuilder = function (name, surname) {
+    return "Mr. " + name + " " + surname;
+};
+var fullName1 = simpleBuilder("Bob", "Simpson");
+console.log(fullName1); // Mr. Bob Simpson
+var phones;
+phones = ["iPhone 7", "HTC 10", "HP Elite x3"];
+var myPhone = phones[0];
+console.log(myPhone);
+var colors = {};
+colors["red"] = "#ff0000";
+colors["green"] = "#00ff00";
+colors["blue"] = "#0000ff";
+console.log(colors["red"]);
+function personBuilder() {
+    var person = function (name, surname) {
+        person.fullName = name + " " + surname;
+    };
+    person.authenticate = function () {
+        console.log(person.fullName + " входит в систему с паролем " + person.password);
+    };
+    return person;
+}
+var tjom = personBuilder();
+tjom("Tom", "Simpson");
+tjom.password = "qwerty";
+tjom.authenticate();
+//Тип функции, определяемый в таком гибридном интерфейсе, как правило, 
+//выступает в роли конструктора объекта. В данном случае такой конструктор имеет тип 
+//(name: string, surname: string):void;.
+//А функция, которая представляет данный интерфейс 
+//(в данном случае - функция personBuilder), реализует эту функцию конструктора, 
+//и также может использовать другие свойства и методы, которые были определены 
+//в интерфейсе.
 //# sourceMappingURL=index.js.map
