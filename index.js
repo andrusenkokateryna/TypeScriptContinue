@@ -963,4 +963,195 @@ var User11 = /** @class */ (function () {
     return User11;
 }());
 var user = userFactory1(User11);
+//UserInfo<T extends IUser & IMan>
+//===================М И К С И Н Ы===========================
+//TypeScript  не позволяет использовать напрямую множественное наследование.
+// Мы можем реализовать множество интерфейсов в классе, но унаследовать его можем только 
+//от одного класса. Однако функциональность миксинов (mixins) частично позволяют унаследовать 
+//свойства и методы сразу двух и более классов.
+//Рассмотрим на примере. Пусть, у нас есть класс Animal, который представляет животное, 
+//и класс Transport, который представляет транспортное средство. Оба эти класса имеют свой 
+//уникальный функционал, который позволяет выполнять заложенные в них задачи. И также пусть у нас 
+//будет класс, который представляет лошадь - с одной стороны, лошадь является животным и наследует 
+//все черты, присущие животному, а с другой стороны, лошадь также можно использовать в качестве
+// транспортного средства. То есть для создания подобного класса было бы неплохо унаследовать его
+// сразу и от класса Animal, и от класса Transport. Решим эту задачу на языке TypeScript:
+var Animal = /** @class */ (function () {
+    function Animal() {
+    }
+    Animal.prototype.feed = function () {
+        console.log("кормим животное");
+    };
+    return Animal;
+}());
+var Transport1 = /** @class */ (function () {
+    function Transport1() {
+        this.speed = 0;
+    }
+    Transport1.prototype.move = function () {
+        if (this.speed == 0) {
+            console.log("Стоим на месте");
+        }
+        else if (this.speed > 0) {
+            console.log("Перемещаемся со скоростью " + this.speed + " км/ч");
+        }
+    };
+    return Transport1;
+}());
+var Horse = /** @class */ (function () {
+    function Horse() {
+        this.speed = 0;
+    }
+    return Horse;
+}());
+//специальнуя функция, которая перекопирует функционал из родительских классов в миксин:
+function applyMixins(derivedCtor, baseCtors) {
+    baseCtors.forEach(function (baseCtor) {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(function (name) {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        });
+    });
+}
+applyMixins(Horse, [Animal, Transport1]); //Первым параметром идет класс-миксин, 
+//а второй параметр - массив применяемых классов.
+var pony = new Horse();
+pony.feed();
+pony.move();
+pony.speed = 4;
+pony.move();
+//таким образом мы все таки можем применить множественное наследование, но все же данный способ 
+//имеет ряд ограничений:
+/*--Миксин может унаследовать только те свойства и методы, которые непосредственно определены
+в применяемом классе. Поэтому данный способ не будет работать, если применяемый класс, в свою очередь,
+также наследует какие-то свойства и методы от другого класса.
+===============================================================================
+--Если родительские классы определяют метод с одним и тем же именем, то миксин наследует только
+тот метод, который копируется в него последним в функции applyMixins.*/
+//=====================М O Д У Л И и П Р О С Т Р А Н С Т В А  И М Е Н===============================
+//..........................Пространства имен.......................................
+//=====================================================================================
+/*Для организации больших программ предназначены пространства имен.
+ Пространства имен содержат группу классов, интерфейсов, функций, других пространств имен,
+ которые могут использоваться в некотором общем контексте.*/
+var Personnel;
+(function (Personnel) {
+    var Employee = /** @class */ (function () {
+        function Employee(name) {
+            this.name = name;
+        }
+        return Employee;
+    }());
+    Personnel.Employee = Employee;
+    function work(emp) {
+        console.log(emp.name, "is working");
+    }
+    Personnel.work = work;
+    Personnel.defaultUser = { name: "Kate" };
+})(Personnel || (Personnel = {}));
+var tom11 = new Personnel.Employee("Tom");
+Personnel.work(tom11); // Tom is working
+console.log(Personnel.defaultUser.name); // Kate
+/*Чтобы типы и объекты, определенные в пространстве имен, были видны извне,
+они определяются с ключевым словом export.
+В этом случае во вне мы сможем использовать класс Employee:*/
+(function (Personnel) {
+    var Employee1 = /** @class */ (function () {
+        function Employee1(name) {
+            this.name = name;
+        }
+        return Employee1;
+    }());
+    Personnel.Employee1 = Employee1;
+})(Personnel || (Personnel = {}));
+var alice12 = new Personnel.Employee("Alice");
+console.log(alice12.name); // Alice
+//...............Пространство имен в отдельном файле.......................
+/*Нередко пространства имен определяются в отдельных файлах.
+Например, определим файл personnel.ts со следующим кодом:*/
+(function (Personnel) {
+    var Employee2 = /** @class */ (function () {
+        function Employee2(name) {
+            this.name = name;
+        }
+        return Employee2;
+    }());
+    Personnel.Employee2 = Employee2;
+    var Manager = /** @class */ (function () {
+        function Manager(name) {
+            this.name = name;
+        }
+        return Manager;
+    }());
+    Personnel.Manager = Manager;
+})(Personnel || (Personnel = {}));
+//И в той же папке определим главный файл приложения app.ts:
+///// <reference path="personnel.ts" />
+var tom12 = new Personnel.Employee2("Fom");
+console.log(tom12.name);
+var sam = new Personnel.Manager("Sam");
+console.log(sam.name);
+/*С помощью директивы /// <reference path="personnel.ts" /> подключается файл personnel.ts.
+
+Далее нам надо объединить оба файла в один файл, который затем можно подключать на веб-страницу.
+ Для этого при компиляции указывается опция:
+
+1
+--outFile target.js sourse1.ts source2.ts source3.ts ...
+Опции outFile в качестве первого параметра передается название файла, который будет генерироваться.
+А последующие параметры - файлы с кодом TypeScript, которые будут компилироваться.
+
+То есть в данном случае нам надо выполнить в консоли команду
+
+tsc --outFile app.js app.ts personnel.ts*/
+//..............Вложенные пространства имен......................
+var Data;
+(function (Data) {
+    var Personnel;
+    (function (Personnel) {
+        var Employee = /** @class */ (function () {
+            function Employee(name) {
+                this.name = name;
+            }
+            return Employee;
+        }());
+        Personnel.Employee = Employee;
+    })(Personnel = Data.Personnel || (Data.Personnel = {}));
+    var Clients;
+    (function (Clients) {
+        var VipClient = /** @class */ (function () {
+            function VipClient(name) {
+                this.name = name;
+            }
+            return VipClient;
+        }());
+        Clients.VipClient = VipClient;
+    })(Clients = Data.Clients || (Data.Clients = {}));
+})(Data || (Data = {}));
+var tom13 = new Data.Personnel.Employee("Tony");
+console.log(tom13.name);
+var sam1 = new Data.Clients.VipClient("Sat");
+console.log(sam1.name);
+//вложенные пространства имен определяются со словом export.
+// Соответственно при обращении к типам надо использовать все пространства имен.
+//...............Псевдонимы...................................
+/*Возможно, нам приходится создавать множество объектов Data.Personnel.Employee,
+но каждый раз набирать полное имя класса с учетом пространств имен, вероятно, не всем понравиться,
+особенно когда модули имеют глубокую вложенность по принципу матрешки.
+Чтобы сократить объем кода, мы можем использовать псевдонимы,
+задаваемые с помощью ключевого слова import. Например:*/
+(function (Data) {
+    var Personnel;
+    (function (Personnel) {
+        var Employee2 = /** @class */ (function () {
+            function Employee2(name) {
+                this.name = name;
+            }
+            return Employee2;
+        }());
+        Personnel.Employee2 = Employee2;
+    })(Personnel = Data.Personnel || (Data.Personnel = {}));
+})(Data || (Data = {}));
+var employee2 = Data.Personnel.Employee2;
+var tom14 = new employee2("Tom14");
+console.log(tom14.name);
 //# sourceMappingURL=index.js.map

@@ -1380,3 +1380,203 @@ class User11 {
 }
  
 let user : User11 = userFactory1(User11);
+
+//UserInfo<T extends IUser & IMan>
+
+//===================М И К С И Н Ы===========================
+//TypeScript  не позволяет использовать напрямую множественное наследование.
+// Мы можем реализовать множество интерфейсов в классе, но унаследовать его можем только 
+//от одного класса. Однако функциональность миксинов (mixins) частично позволяют унаследовать 
+//свойства и методы сразу двух и более классов.
+
+//Рассмотрим на примере. Пусть, у нас есть класс Animal, который представляет животное, 
+//и класс Transport, который представляет транспортное средство. Оба эти класса имеют свой 
+//уникальный функционал, который позволяет выполнять заложенные в них задачи. И также пусть у нас 
+//будет класс, который представляет лошадь - с одной стороны, лошадь является животным и наследует 
+//все черты, присущие животному, а с другой стороны, лошадь также можно использовать в качестве
+// транспортного средства. То есть для создания подобного класса было бы неплохо унаследовать его
+// сразу и от класса Animal, и от класса Transport. Решим эту задачу на языке TypeScript:
+
+class Animal {
+ 
+    feed():void {
+        console.log("кормим животное");
+    }
+}
+
+class Transport1 {
+ 
+    speed: number=0;
+    move(): void {
+        if (this.speed == 0) {
+            console.log("Стоим на месте");
+        }
+        else if (this.speed > 0) {
+            console.log("Перемещаемся со скоростью " + this.speed + " км/ч");
+        }
+    }
+}
+
+class Horse implements Animal, Transport1 {
+    speed: number=0;
+    feed: () => void;
+    move: () => void;
+}
+//специальнуя функция, которая перекопирует функционал из родительских классов в миксин:
+
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        });
+    });
+}
+ 
+applyMixins(Horse, [Animal, Transport1]);//Первым параметром идет класс-миксин, 
+											//а второй параметр - массив применяемых классов.
+ 										
+let pony: Horse = new Horse();
+pony.feed();
+pony.move();
+pony.speed = 4;
+pony.move();
+ 
+ //таким образом мы все таки можем применить множественное наследование, но все же данный способ 
+ //имеет ряд ограничений:
+
+ /*--Миксин может унаследовать только те свойства и методы, которые непосредственно определены 
+ в применяемом классе. Поэтому данный способ не будет работать, если применяемый класс, в свою очередь, 
+ также наследует какие-то свойства и методы от другого класса.
+===============================================================================
+--Если родительские классы определяют метод с одним и тем же именем, то миксин наследует только 
+тот метод, который копируется в него последним в функции applyMixins.*/
+//=====================М O Д У Л И и П Р О С Т Р А Н С Т В А  И М Е Н===============================
+//..........................Пространства имен.......................................
+//=====================================================================================
+/*Для организации больших программ предназначены пространства имен.
+ Пространства имен содержат группу классов, интерфейсов, функций, других пространств имен,
+ которые могут использоваться в некотором общем контексте.*/
+
+ namespace Personnel {//В данном случае пространство имен называется Personnel
+ 
+    export interface IUser{// содержит интерфейс  IUser
+        displayInfo();
+    }
+     
+    export class Employee {
+        constructor(public name: string){// содержит класс Employee
+        }
+    }
+     
+    export function work(emp: Employee) : void{
+        console.log(emp.name, "is working");
+    }
+     
+    export let defaultUser= { name: "Kate" }
+}
+ 
+let tom11 = new Personnel.Employee("Tom")
+Personnel.work(tom11);                    // Tom is working
+ 
+console.log(Personnel.defaultUser.name);    // Kate
+
+ /*Чтобы типы и объекты, определенные в пространстве имен, были видны извне, 
+ они определяются с ключевым словом export. 
+ В этом случае во вне мы сможем использовать класс Employee:*/
+
+ namespace Personnel {
+    export class Employee1 {
+     
+        constructor(public name: string){
+        }
+    }
+}
+ 
+let alice12 = new Personnel.Employee("Alice");
+console.log(alice12.name);    // Alice
+
+//...............Пространство имен в отдельном файле.......................
+/*Нередко пространства имен определяются в отдельных файлах. 
+Например, определим файл personnel.ts со следующим кодом:*/
+
+namespace Personnel {
+    export class Employee2 {
+     
+        constructor(public name: string){
+        }
+    }
+    export class Manager {
+     
+        constructor(public name: string){
+        }
+    }
+}
+//И в той же папке определим главный файл приложения app.ts:
+///// <reference path="personnel.ts" />
+ 
+let tom12 = new Personnel.Employee2("Fom")
+console.log(tom12.name);
+ 
+let sam = new Personnel.Manager("Sam");
+console.log(sam.name);
+
+/*С помощью директивы /// <reference path="personnel.ts" /> подключается файл personnel.ts.
+
+Далее нам надо объединить оба файла в один файл, который затем можно подключать на веб-страницу.
+ Для этого при компиляции указывается опция:
+
+1
+--outFile target.js sourse1.ts source2.ts source3.ts ...
+Опции outFile в качестве первого параметра передается название файла, который будет генерироваться. 
+А последующие параметры - файлы с кодом TypeScript, которые будут компилироваться.
+
+То есть в данном случае нам надо выполнить в консоли команду
+
+tsc --outFile app.js app.ts personnel.ts*/
+
+//..............Вложенные пространства имен......................
+namespace Data{
+    export namespace Personnel {
+        export class Employee {
+         
+            constructor(public name: string){
+            }
+        }
+    }
+    export namespace Clients {
+        export class VipClient {
+         
+            constructor(public name: string){
+            }
+        }
+    }
+}
+ 
+let tom13 = new Data.Personnel.Employee("Tony")
+console.log(tom13.name);
+let sam1 = new Data.Clients.VipClient("Sat");
+console.log(sam1.name);
+
+//вложенные пространства имен определяются со словом export.
+// Соответственно при обращении к типам надо использовать все пространства имен.
+
+//...............Псевдонимы...................................
+
+/*Возможно, нам приходится создавать множество объектов Data.Personnel.Employee, 
+но каждый раз набирать полное имя класса с учетом пространств имен, вероятно, не всем понравиться, 
+особенно когда модули имеют глубокую вложенность по принципу матрешки. 
+Чтобы сократить объем кода, мы можем использовать псевдонимы, 
+задаваемые с помощью ключевого слова import. Например:*/
+namespace Data{
+    export namespace Personnel {
+        export class Employee2 {
+         
+            constructor(public name: string){
+            }
+        }
+    }
+}
+ 
+import employee2 = Data.Personnel.Employee2;
+let tom14 = new employee2("Tom14")
+console.log(tom14.name);
