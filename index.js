@@ -753,7 +753,7 @@ tjom.authenticate();
 //==========================================================//
 //==========================================================//
 //==========================================================//
-//===================ПPEOБРАЗОВАНИЕ ТИПОВ===================
+//===================П P E O Б Р А З О В А Н И Е===Т И П О В===================
 //Поскольку объекты Employee в то же время являются и объектами User, 
 //то при определении объектов мы можем написать так:
 //let alice : User = new Employee("Microsoft", "Alice");
@@ -801,7 +801,7 @@ var Employee7 = /** @class */ (function (_super) {
         return _this;
     }
     return Employee7;
-}(User));
+}(User7));
 function getUserName7(user) {
     return user.name;
 }
@@ -828,4 +828,139 @@ if (alice7 instanceof User7) {
 else {
     console.log("Alice is not a User");
 }
+//=======================О Б О Б Щ Е Н И Я==============================================
+//TypeScript является строго типизированным языком, однако иногда надо построить функционал так, 
+//чтобы он мог использовать данные любых типов. В некоторых случаях мы могли бы использовать тип any:
+function getId(id) {
+    return id;
+}
+var result3 = getId(5);
+console.log(result3);
+//Однако в этом случае мы не можем использовать результат функции как объект того типа, 
+//который передан в функцию. Для нас это тип any. Если бы вместо числа 5 в функцию передавался 
+//бы объект какого-нибудь класса, и нам потом надо было бы использовать этот объект, например, 
+//вызывать у него функции, то это было бы проблематично. И чтобы конкретизировать возвращаемый тип, 
+//мы можем использовать обобщения:
+/*function getId<T>(id: T): T {
+     
+    return id;
+}
+*/
+//С помощью выражения <T> мы указываем, что функция getId типизирована определенным типом T. 
+//При выполнении функции вместо Т будет подставляться конкретный тип. Причем на этапе компиляции 
+//конкретный тип не известен. И возвращать функция будет объект этого типа. Например:
+function getId1(id) {
+    return id;
+}
+var result4 = getId1(10); //T будет испльзоваться тип number, 
+//поэтому в функцию мы можем передать число.
+console.log(result4);
+var result5 = getId1("abc"); //T используется тип string, 
+//поэтому во втором случае можно передать строку.
+console.log(result5);
+// мы можем передать в функцию объекты различных типов, но при этом сохраняется строгая типизация, 
+//каждый вариант обобщенной функции может принимать объекты только определенного типа.
+//==========================================================================
+//==========================================================================
+// ===Подобным образом еще можно использовать обобщенные МАССИВЫ:
+function getString(arg) {
+    var result6 = "";
+    for (var i = 0; i < arg.length; i++) {
+        if (i > 0)
+            result6 += ",";
+        result6 += arg[i].toString();
+    }
+    console.log(result6);
+    return result6;
+}
+var result6 = getString([1, 2, 34, 5]);
+console.log(result6);
+//В данном случае вне зависимости от типа данных, переданных в массиве, все его элементы 
+//соединятся в одну общую строку.
+//===================================================================
+//===================================================================
+//Обобщенные классы и интерфейсы
+var User8 = /** @class */ (function () {
+    function User8(id) {
+        this._id = id;
+    }
+    User8.prototype.getId = function () {
+        return this._id;
+    };
+    return User8;
+}());
+var tom7 = new User8(3);
+console.log(tom7.getId()); // возвращает number
+var alice0 = new User8("vsf");
+console.log(alice0.getId()); // возвращает string
+var User9 = /** @class */ (function () {
+    function User9(id) {
+        this._id = id;
+    }
+    User9.prototype.getId = function () {
+        return this._id;
+    };
+    return User9;
+}());
+var User10 = /** @class */ (function () {
+    function User10(id, name) {
+        this._id = id;
+        this._name = name;
+    }
+    User10.prototype.getInfo = function () {
+        console.log("id: " + this._id + "; name: " + this._name);
+    };
+    return User10;
+}());
+var Employee10 = /** @class */ (function (_super) {
+    __extends(Employee10, _super);
+    function Employee10(id, name, company) {
+        var _this = _super.call(this, id, name) || this;
+        _this._company = company;
+        return _this;
+    }
+    Employee10.prototype.getInfo = function () {
+        console.log("id: " + this._id + "; name: " + this._name + "; company:" + this._company);
+    };
+    return Employee10;
+}(User10));
+//Теперь пусть у нас будет класс, выводящий информацию о пользователях:
+var UserInfo = /** @class */ (function () {
+    function UserInfo() {
+    }
+    UserInfo.prototype.getUserInfo = function (user) {
+        user.getInfo();
+    };
+    return UserInfo;
+}());
+//В методе getUserInfo мы хотим использовать функцию getInfo(), предполагая, что в качестве
+// параметра будет передаваться объект IUser. Но чтобы нельзя было передать объекты любого типа, 
+//а только объекты IUser, устанавливается ограничения с помощью ключевого слова extends.
+//И затем мы можем использовать класс, передавая подходящие объекты:
+var tom8 = new User10(3, "Som");
+var alice1 = new Employee10(4, "Alice", "Microsoft");
+var userStore = new UserInfo();
+userStore.getUserInfo(tom8);
+userStore.getUserInfo(alice1);
+//в данном случае также можно было бы ограничить параметр не интерфейсом IUser, 
+//а классом User: class UserInfo<T extends User>
+//=======================================================
+//=======================================================
+//.....................Ключевое слово new...................
+//Чтобы создать новый объект в коде обобщений, нам надо указать, 
+//что обобщенный тип T имеет конструктор. Это означает, что вместо параметра type:T 
+//нам надо указать type: {new(): T;}. Например, следующий обобщенный интерфейс работать не будет:
+/*function UserFactory<T>(): T {
+    return new T(); // ошибка компиляции
+}*/
+function userFactory1(type) {
+    return new type();
+}
+var User11 = /** @class */ (function () {
+    function User11() {
+        console.log("создан объект User");
+    }
+    return User11;
+}());
+var user = userFactory1(User11);
 //# sourceMappingURL=index.js.map
