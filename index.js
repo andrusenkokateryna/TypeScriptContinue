@@ -750,4 +750,82 @@ tjom.authenticate();
 //(в данном случае - функция personBuilder), реализует эту функцию конструктора, 
 //и также может использовать другие свойства и методы, которые были определены 
 //в интерфейсе.
+//==========================================================//
+//==========================================================//
+//==========================================================//
+//===================ПPEOБРАЗОВАНИЕ ТИПОВ===================
+//Поскольку объекты Employee в то же время являются и объектами User, 
+//то при определении объектов мы можем написать так:
+//let alice : User = new Employee("Microsoft", "Alice");
+//везде, где в функцию в качестве параметра передается объект User 
+//или возвращается из функции объект User, мы вместо объекта User можем 
+//передавать объект Employee:
+var User6 = /** @class */ (function () {
+    function User6(userName) {
+        this.name = userName;
+    }
+    return User6;
+}());
+var Employee6 = /** @class */ (function (_super) {
+    __extends(Employee6, _super);
+    function Employee6(employeeCompany, userName) {
+        var _this = _super.call(this, userName) || this;
+        _this.company = employeeCompany;
+        return _this;
+    }
+    return Employee6;
+}(User6));
+function getUserName(user) {
+    return user.name;
+}
+function userFactory(name) {
+    return new Employee6("не установлено", name);
+}
+var alicce = new Employee6("Microsoft", "Alice");
+var userName = getUserName(alice);
+console.log(userName); // Alice
+var tomm = userFactory("Tolker");
+userName = getUserName(tomm);
+console.log(userName); // Tolker
+var User7 = /** @class */ (function () {
+    function User7(userName) {
+        this.name = userName;
+    }
+    return User7;
+}());
+var Employee7 = /** @class */ (function (_super) {
+    __extends(Employee7, _super);
+    function Employee7(employeeCompany, userName) {
+        var _this = _super.call(this, userName) || this;
+        _this.company = employeeCompany;
+        return _this;
+    }
+    return Employee7;
+}(User));
+function getUserName7(user) {
+    return user.name;
+}
+//Функция getUserName в качестве параметра принимает объект интерфейса IUser:
+var alice7 = new Employee7("Google", "Alicon");
+console.log(getUserName7(alice7));
+console.log(getUserName7({ name: "Tomma" }));
+//console.log(getUserName7({ name: "Bob", company:"Microsoft" })); // ошибка
+//Ни класс User, ни класс Employee не применяют интерфейс IUser, 
+//однако мы можем их использовать, так как они имеют все те же свойства и методы, 
+//что интерфейс IUser (в данном случае только свойство name).
+//Объект { name: "Tom" } также является объектом интерфейса, так как он имеет свойство name. 
+//В то же время при передаче объекта { name: "Bob", company:"Microsoft" } мы получим ошибку, 
+//так как он уже расширяет возможности IUser, добавляя свойство company и напрямую интерфейсу 
+//IUser не соответствует. Но даже в этом случае мы его можем вполне использовать, 
+//применив преобразование типов:
+console.log(getUserName7({ name: "Bob", company: "Microsoft" })); // Bob
+//......................Оператор instanceOf............................
+//С помощью оператора instanceOf можно проверить, принадлежит ли объект определенному классу:
+var alice8 = new Employee7("Google", "Alice");
+if (alice7 instanceof User7) {
+    console.log("Alice is a User");
+}
+else {
+    console.log("Alice is not a User");
+}
 //# sourceMappingURL=index.js.map

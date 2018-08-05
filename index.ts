@@ -756,7 +756,8 @@ someFigure1.getArea();   // area = 900
 //Кроме того, при наследовании производные классы обязаны реализовать 
 //все абстрактные методы.
   
-//========Интерфейсы====================
+//========И Н Т Е Р Ф Е Й СЫ====================
+////implements - реализация интерфейса, extends - наследование
 //Интерфейсы объектов
 //============================================
 //Интерфейс определяет свойства и методы, которые объект должен реализовать.
@@ -1042,3 +1043,144 @@ tjom.authenticate();
 //(в данном случае - функция personBuilder), реализует эту функцию конструктора, 
 //и также может использовать другие свойства и методы, которые были определены 
 //в интерфейсе.
+//==========================================================//
+//==========================================================//
+//==========================================================//
+//===================ПPEOБРАЗОВАНИЕ ТИПОВ===================
+
+//Поскольку объекты Employee в то же время являются и объектами User, 
+//то при определении объектов мы можем написать так:
+//let alice : User = new Employee("Microsoft", "Alice");
+//везде, где в функцию в качестве параметра передается объект User 
+//или возвращается из функции объект User, мы вместо объекта User можем 
+//передавать объект Employee:
+
+class User6 {
+ 
+    name: string;
+    constructor(userName: string) {
+ 
+        this.name = userName;
+    }
+}
+
+class Employee6 extends User6 {
+ 
+    company: string;
+    constructor(employeeCompany: string, userName: string) {
+ 
+        super(userName);
+        this.company = employeeCompany;
+    }
+}
+
+function getUserName(user: User6): string {
+    return user.name;
+}
+ 
+function userFactory(name: string): User6 {
+    return new Employee6("не установлено", name);
+}
+ 
+let alicce: Employee6 = new Employee6("Microsoft", "Alice");
+let userName = getUserName(alice);
+console.log(userName);  // Alice
+ 
+let tomm = userFactory("Tolker");
+userName = getUserName(tomm);
+console.log(userName);  // Tolker
+
+//Здесь продемонстрированы восходящиие преобразования, то есть преобразования 
+//от более конкретного типа к более общему - от призводного типа Employee к 
+//базовому типу User.
+//Они производятся неявно, и нам не надо писать какой-то дополнительный код.
+
+//Но есть и другой тип преобразований - нисходящие или от более общего типа к более 
+//конкретному. Например:
+/*let alicce1: User = new Employee6("Microsoft", "Alice");
+console.log(alicce1.company); // ошибка - в классе User нет свойства company*/
+
+//Здесь переменная alice имеет тип User, однако в реальности эта переменная указывает 
+//на объект типа Employee, так как для ее инициализации мы использовали конструктор 
+//типа Employee, который устанавливает свойство company. Однако попытка вывести значение 
+//свойства company у объекта alice завершится ошибкой, так как alice - это все таки 
+//переменная типа User, в котором нет свойства company.
+
+//Чтобы решить эту ситуацию, нам надо явно преобразовать объект alice к типу Employee:
+/*let alicce: User = new Employee6("Microsoft", "Alica");
+ 
+let aliEmployee: Employee6 = <Employee6>alicce; // преобразование к типу Employee
+console.log(alicceEmployee.company);
+ 
+// или так
+console.log((<Employee6>alicce).company);*/
+
+//Выражение <Тип> переменная позволяет преобразовать переменную к типу, 
+//который идет в угловых скобках.
+//=========================================
+//========================================
+
+//Другой способ осуществить явное преобразование типов представляет применение 
+//оператора as:
+
+/*let alicce: User = new Employee6("Microsoft", "Alice");
+ 
+let aliceEmployee: Employee = alicce as Employee6; // преобразование к типу Employee
+console.log(aliceEmployee.company);
+ 
+// или так
+console.log((alicce as Employee6).company);*/
+
+//Все сказанное в отношении преобразования классов будет справедливо и для преобразования 
+//интерфейсов. В то же время есть некоторые особенности. Пусть у нас будет интерфейс 
+//IUser, никак не связанный с классами User и Employee и ими не реализуемый:
+
+interface IUser7 {
+    name: string;
+}
+class User7 {
+    name: string;
+    constructor(userName: string) {
+        this.name = userName;
+    }
+}
+class Employee7 extends User7 {
+    company: string;
+    constructor(employeeCompany: string, userName: string) {
+        super(userName);
+        this.company = employeeCompany;
+    }
+}
+ 
+function getUserName7(user: IUser7): string {
+    return user.name;
+}
+
+//Функция getUserName в качестве параметра принимает объект интерфейса IUser:
+
+let alice7: User7 = new Employee7("Google", "Alicon");
+console.log(getUserName7(alice7));
+ 
+console.log(getUserName7({ name: "Tomma" }));
+//console.log(getUserName7({ name: "Bob", company:"Microsoft" })); // ошибка
+
+//Ни класс User, ни класс Employee не применяют интерфейс IUser, 
+//однако мы можем их использовать, так как они имеют все те же свойства и методы, 
+//что интерфейс IUser (в данном случае только свойство name).
+//Объект { name: "Tom" } также является объектом интерфейса, так как он имеет свойство name. 
+//В то же время при передаче объекта { name: "Bob", company:"Microsoft" } мы получим ошибку, 
+//так как он уже расширяет возможности IUser, добавляя свойство company и напрямую интерфейсу 
+//IUser не соответствует. Но даже в этом случае мы его можем вполне использовать, 
+//применив преобразование типов:
+
+console.log(getUserName7({ name: "Bob", company:"Microsoft" } as IUser7)); // Bob
+
+//......................Оператор instanceOf............................
+//С помощью оператора instanceOf можно проверить, принадлежит ли объект определенному классу:
+let alice8: Employee7 = new Employee7("Google", "Alice");
+if (alice7 instanceof User7) {
+    console.log("Alice is a User");
+}
+else {
+    console.log("Alice is not a User");
+}
