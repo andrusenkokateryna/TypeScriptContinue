@@ -1,8 +1,8 @@
 # TypeScriptContinue 
 
-1) Hello World! on TS;
+0) Hello World! on TS;
 
-1.1) Переменные;
+1) Переменные;
 
 2)Enum;
 
