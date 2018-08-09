@@ -1,3 +1,4 @@
+"use strict";
 /// <reference path="globals.d.ts" />
 var Utility = /** @class */ (function () {
     function Utility() {
@@ -22,3 +23,4 @@ var Utility1 = /** @class */ (function () {
 window.onload = function () {
     Utility1.displayGlobalVar();
 };
+//# sourceMappingURL=app.js.map

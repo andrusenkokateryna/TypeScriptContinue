@@ -1,98 +1,108 @@
 "use strict";
 /*//=================== #1===
-import * as dev from "./devise";
-let iphone: devPhone = new dev.Phone("iPhone X");
-dev.Call(iphone);*/
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var array = ['hello', ' ', 'world!'];
-for (var _i = 0, array_1 = array; _i < array_1.length; _i++) {
-    var val = array_1[_i];
+
+
+
+let array = ['hello',' ','world!'];
+for(let val of array){
     document.write(val);
 }
-var a;
-a = 1;
+
+let a;
+a=1;
 console.log(a);
-var oneString = "1";
-var decimal = 6;
-var hex = 0xf00d;
-var binary = 10;
-var octal = 484;
+
+let oneString="1"
+
+let decimal: number = 6;
+let hex: number = 0xf00d;
+let binary: number = 0b1010;
+let octal: number = 0o744;
+
 //===========TUPLES===============
 // определение кортежа - кортеж состоит из двух элементов - строки и числа
-var userInfo;
+let userInfo: [string, number];
 // инициализация кортежа
 userInfo = ["Tom", 28];
 // Неправильная инициализация - переданные значения не соответствуют типам по позиции
 //userInfo = [28, "Tom"]; // Ошибка
+ 
 // использование кортежа
 console.log(userInfo[1]); // 28
 userInfo[1] = 37;
+
 //====================Enum===#2====
-var Color;
-(function (Color) {
-    Color[Color["Red"] = 1] = "Red";
-    Color[Color["Green"] = 2] = "Green";
-    Color[Color["Blue"] = 3] = "Blue";
-})(Color || (Color = {}));
-;
-var colorName = Color[2];
-console.log(colorName);
-function warnUser() {
+
+enum Color{Red=1,Green, Blue};
+    let colorName=Color[2];
+    console.log(colorName);
+
+    function warnUser(): void {
     alert("This is my warning message");
 }
-var someVar = "hello";
-console.log(someVar); // сейчас someVar - это string
+
+let someVar: any = "hello";
+console.log(someVar);   // сейчас someVar - это string
 someVar = 20;
-console.log(someVar); // сейчас someVar - это number
+console.log(someVar);   // сейчас someVar - это number
+
 //===========КОМПЛЕКСНЫЕ ОБЪЕКТЫ====================
-var person = { name: "Tom", age: 23 };
+let person = {name:"Tom", age:23};
 console.log(person.name);
 // альтернативный вариант получения свойства
 console.log(person["name"]);
+
 //===============Union==========
 //ОБЪДИНЕНИЕ ТИПОВ
-var id;
+
+let id : number | string;
 id = "1345dgg5";
 console.log(id); // 1345dgg5
 id = 234;
-console.log(id); // 234
+console.log(id);  // 234
+
 //==========typeof=====
-var sum;
+let sum: any;
 sum = 1200;
+ 
 if (typeof sum === "number") {
-    var result_1 = sum / 12;
-    console.log(result_1);
+     
+    let result: number = sum / 12;
+    console.log(result);
 }
-else {
+else{
     console.log("invalid operation");
 }
-var sums = 36.6;
+
+//=====Псевдонимы типов
+type stringOrNumberType = number | string;
+let sums: stringOrNumberType = 36.6;
 if (typeof sum === "number") {
     console.log(sums / 6);
 }
+
 //=====assertion=====приведение к типу====#4==
-var someValue = "this is a string";
-var strLength = someValue.length;
-console.log(strLength); //16
+
+let someValue: any = "this is a string";
+ 
+let strLength: number = (<string>someValue).length
+
+console.log(strLength);//16
+
 //=================
-var someUnionValue = "hello work";
-strLength = someUnionValue.length;
+
+let someUnionValue: string | number = "hello work";
+strLength = (<string>someUnionValue).length;
 console.log(strLength); // 10
-var someValuee = "this is a string";
-var strLengthh = someValue.length;
-console.log(strLengthh); //16
-var someUnionValuee = "hello work";
-strLength = someUnionValue.length;
+
+let someValuee: any = "this is a string";
+ 
+let strLengthh: number = (someValue as string).length;
+console.log(strLengthh);//16
+let someUnionValuee: string | number = "hello work";
+strLength = (someUnionValue as string).length;
 console.log(strLength); // 10
+
 try {
     throw "oh no!";
 }
@@ -100,6 +110,7 @@ catch (e) {
     console.log("Oh well.");
     console.log(e);
 }
+
 //=========ПЕРЕМЕННЫЕ====#1.1===================
 //var
 /*Доступна в любой части функции, в которой она определена.
@@ -163,6 +174,16 @@ function print(){
 // Error: 'e' doesn't exist here
 //console.log(e);
 // =====================let or const======================================
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 /*Применяя принцип наименьшего уровня привелегий, все объявления переменных, которые вы в
 дальнейшем не планируете менять, должны использовать const. Объясняется это тем, что если
 переменная
@@ -1209,6 +1230,435 @@ SystemJS: универсальный загрузчик, может примен
  ==========================================================================
  ......................Определение модуля и экспорт.......................
  Пусть у нас будет в проекте файл devices.ts:
- */
-//Но мы могли бы и по другому экспортировать все сущности:
+ export interface Device{
+    name: string;
+}
+     
+export class Phone implements Device {
+    name: string;
+    constructor(n:string){
+        this.name = n;
+    }
+}
+     
+export function Call(phone: Phone) : void{
+    console.log("Make a call by", phone.name);
+}
+Чтобы классы, интерфейсы, функции были видны извне, они определяются с ключевым словом export.
+======================================================
+Но мы могли бы и по другому экспортировать все сущности:
+interface Device{
+    name: string;
+}
+     
+class Phone implements Device {
+    name: string;
+    constructor(n:string){
+        this.name = n;
+    }
+}
+     
+function Call(phone: Phone) : void{
+    console.log("Make a call by", phone.name);
+}
+export {Device, Phone, Call as Devices};
+При экспорте можно определить псевдоним для типа с помощью ключевого слова as.
+ Это имя затем может применяться при импорта класса.
+ .............................Импорт................................
+ Чтобы задействовать модуль в приложении, его надо импортировать с помощью оператора import.
+  Например, импортируем класс Phone и функцию Call из выше определенного модуля devices.ts:
+  ===========================================================================================
+  import {Phone, Call} from "./devices";После слова import определяется набор импортируемых типов - класов,
+  ...................................... интерфейсов, функций, объектов.после слова from указывается путь
+  ....................................... к модулю. (devices)
+let iphone: Phone = new Phone("iPhone X");
+Call(iphone);
+ с помощью оператора as можно указать псевдоним для типа:
+ ========================
+ import {Phone, Call as makeCall} from "./devices";
+let iphone: Phone = new Phone("iPhone X");
+makeCall(iphone);
+===========================
+//Можно импортировать сразу весь модуль:
+/*import * as dev from "./devise";
+let iphone: devPhone = new dev.Phone("iPhone X");
+dev.Call(iphone);
+В данном случае модуль импортируется через псевдоним "dev".
+И, используя этот псевдоним, мы можем обращаться к расположенным в этом модуле типам.
+......................Экспорт по умолчанию......................
+Параметры экспорта по умолчанию позволяют определить тип, который будет импортироваться из
+модуля по умолчанию. К примеру, добавим новый модуль smartwatch.ts:
+export default class SmartWatch{
+     
+    model:string;
+}
+Ключевое слово default позволяет установить класс SmartWatch в качестве типа по умолчанию.
+ И затем мы можем импортировать его следующим образом:
+ import SmartWatch from "./smartwatch";
+let iwatch: SmartWatch = new SmartWatch();
+*/
+//=========================================================================
+//=========================================================================
+//=========================================================================
+//=========================================================================
+//..................Загрузка модулей.......................................
+/* для загрузки модулей необходимо применять специальные инструменты, которые называются загрузчиками.
+В этом теме рассмотрим загрузку модулей с помощью загрузчика SystemJS.
+загрузка сервера производится через AJAX, поэтому такое приложение TypeScript должно быть размещено
+на веб-сервере. То есть у нас не получится просто кинуть страницу в веб-браузер, как, например,
+это было в первых темах. Поэтому прежде всего надо определиться с веб-сервером.
+ Веб-сервер может быть любым. В данном случае воспользуемся самым демократичным вариантом - Node.js.
+ Для этого нам будет достаточно установить на свой компьютер Node.js.
+ Вначале определим папку на жестком диске, где будет располагаться проект.
+ Допустим, это будет папка C:\typescript. И первым делом определим в ней файл сервера.
+ Пусть он будет называться server.js и будет иметь следующий код:
+ var http = require("http");
+var fs = require("fs");
+  
+http.createServer(function(request, response){
+     
+    // получаем путь после слеша
+    var filePath = request.url.substr(1);
+    // установка пути по умолчанию
+    if(filePath == "") filePath ="index.html";
+    fs.readFile(filePath, function(error, data){
+                  
+        if(error){  // если файл не найден
+            response.statusCode = 404;
+            response.end("Not Found");
+        }
+        else{
+            response.end(data);
+        }
+        return;
+    })
+}).listen(3000, function(){
+    console.log("Сервер запущен по адресу http://localhost:3000/");
+});
+Это самый примитивный сервер, который отдает пользователю статические файлы.
+Для создания сервера применяется функция http.createServer, а для считывания и
+отправки файлов - функция fs.readFile(). Сервер будет запускаться по адресу
+ http://localhost:3000/. Для целей тестирования в прицнипе больше ничего
+ не нужно. Но опять же вместо node.js это может быть любая другая технология
+ сервера - php, asp.net, python и т.д.
+
+Определим в проекте каталог app, где будут собственно распложены файлы TypeScript.
+ Добавим в этого каталог файл devices.ts, который будет представлять простейший модуль:
+
+ export interface Device{
+    name: string;
+}
+    
+export class Phone implements Device {
+    name: string;
+    constructor(n:string){
+        this.name = n;
+    }
+}
+    
+export function Call(phone: Phone) : void{
+    console.log("Make a call by", phone.name);
+}
+
+И также в папку app добавим главный файл приложения - app.ts со следующим кодом:
+
+import {Phone, Call as makeCall} from "./devices";
+let iphone: Phone = new Phone("iPhone X");
+makeCall(iphone);
+
+В этом файле загружается модуль devices и используются определенные в этом модуле типы.
+
+Теперь в корневой папке проекта определим веб-страницу нашего приложения - файл index.html:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Модули в TypeScript</title>
+</head>
+<body>
+    <h1>Модули в TypeScript</h1>
+ 
+    <div id="content"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.21.0/system.js"></script>
+    <script>
+        SystemJS.config({
+            baseURL: "app",
+            packages: {
+                "/": { defaultExtension: "js" }
+            }
+        });
+        System.import("app.js");
+    </script>
+</body>
+</html>
+
+Прежде всего из CDN в низу страницы загружается SystemJS. Далее производится
+конфигурация загрузчика с помощью функции SystemJS.config(), чтобы он использовал наши файлы.
+Прежде всего с помощью параметра baseURL: "app", что файлы будут располагаться в папке app
+ (где у нас сейчас находятся файлы typescript).
+
+Поскольку в итоге мы будем компилировать файлы на TypeScript в JavaScript
+(так как только javascript поддерживается браузером), то соответственно в данном случае
+мы будем работать только с файлами js. Для этого определяем параметр packages:
+{"/": { defaultExtension: "js" }}. "defaultExtension" указывает на расширение,
+которое будет добавляться к модулям.
+
+После этого импортируется главный файл приложения - в нашем случае app.js
+(в который компилируется app.ts): System.import("app.js").
+
+В итоге весь проект будет выглядеть следующим образом:
+falder ts
+    falder app
+        /*app.js
+        /*app.ts
+        /*devise.js
+        /*devise.ts
+    <>index.html
+    /*server.js
+
+    Теперь перейдем в консоли к каталогу нашего проекта и скомилируем файлы ts в js
+    с помощью команды:
+
+tsc app/app.ts
+.................
+
+После этого в одном каталоге с ts-файлами появятся скомпилированные js-файлы.
+ Затем запустим сервер с помощью команды
+
+node server.js
+................
+
+Стоит отметить, что в реальном приложении компиляции из TS в JS,
+ а также ряд сопутствующих моментов, как сборка, минификация и т.д., как правило,
+  делается автоматически при старте приложения или при изменениях в файле.
+  Для этого, как правило, используются различные иструменты типа gulp, webpack и другие.
+  В данном же случае мы рассмотриваем именно простейший пример, акцентируя внимание именно
+  на загрузке модулей.
+
+После запуска сервера мы можем перейти в браузере по адресу
+http://localhost:3000, нам отобразится страница, а в консоли браузера мы
+сможем увидеть результат работы нашего кода на typescript.
+смотри папку "ts"
+========================З А Г О Л О В О Ч Н Ы Е ==Ф А Й Л Ы=======================
+.............................Работа с заголовочными файлами.....................
+===================================================================================
+Для установки связи с внешними файлами скриптов javascript в TS служат декларативные
+или заголовочные файлы. Это файлы с расширением .d.ts, они описывают синтаксис и структуру
+функций и свойств, которые могут использоваться в программе, не предоставляя при этом
+конкретной реализации. Их действие во многом похоже на работу файлов с расширением .h в
+ языках C/C++. Они выполняют своего рода роль оберток над библиотеками JavaScript.
+
+Рассмотрим, как мы можем использовать заголовочные файлы. Иногда в программах
+на javascript используются глобальные переменные, которые должны быть видны для всех
+функций приложения. Например, пусть на веб-странице (или во внешнем подключаемом файле
+javascript) в коде js определена переменная:
+
+<!DOCTYPE html>
+ 
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>TypeScript HTML App</title>
+</head>
+<body>
+    <h1>TypeScript HTML App</h1>
+ 
+    <div id="content"></div>
+    <script>
+        var globalVar = "hello TS";
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
+
+И пусть мы хотим получить к этой переменной доступ в коде TypeScript в файле app.ts:
+class Utility {
+    static displayGlobalVar() {
+         
+        console.log(globalVar);
+    }
+}
+ 
+window.onload = () => {
+     
+    Utility.displayGlobalVar();
+    
+};
+
+При запуске приложения компилятор TS не сможет скомпилировать программу, так как для кода
+TS глобальная переменная пока не существует. В этом случае нам надо подключать определение
+глобальной переменной с помощью декларативных файлов. Для этого добавим в проект новый файл,
+который назовем globals.d.ts и который будет иметь следующее содержимое:
+..........................................
+ declare var globalVar: string;
+..........................................
+
+С помощью ключевого слова declare в программу на TS подключается определение глобальной переменной.
+
+И также изменим файл app.ts:
+
+/// <reference path="globals.d.ts" />
+ 
+class Utility {
+    static displayGlobalVar() {
+        console.log(globalVar);
+    }
+}
+window.onload = () => {
+    Utility.displayGlobalVar();
+};
+
+С помощью директивы reference в начале файла подключается заголовочный файл globals.d.ts.
+С помощью параметра path указывается путь к заголовочному файлу.
+
+То есть у нас получится следующая структура проекта:
+
+app.ts
+
+globals.d.ts
+
+index.html
+===========================================
+========================================
+Подобным образом можно подключить внешние функции. Например, пусть на веб-странице в коде js
+объявлена такая функция:
+
+var globalVar = "hello TS";
+function display() {
+ 
+    console.log("globalVar: " + globalVar);
+}
+
+В этом случае подключение в файле globals.d.ts выглядело бы так:
+declare var globalVar: string;
+declare function display(): void;
+
+А в коде TS напрямую можно было бы использовать функцию display:
+
+/// <reference path="globals.d.ts" />
+class Utility {
+    static displayGlobalVar() {
+        //console.log(globalVar);
+        display();
+    }
+}
+
+Однако может возникнуть сложность с подключением более сложных объектов.
+Например, пусть есть такой объект javascript:
+...............................................
+var points = [{ X: 10, Y: 34 },
+              { X: 24, Y: 65 },
+               { X: 89, Y: 12 }];
+..................................................
+Для данного массива объектов в файле globals.d.ts мы можем определить соответствующий
+отдельному объекту интерфейс и подключить массив объектов некоторого интерфейса, который
+содержит два свойства X и Y:
+............................
+interface IPoint {
+    X: number;
+    Y: number;
+}
+declare var points: IPoint[];
+..............................
+И в TS мы сможем использовать этот массив:
+/// <reference path="globals.d.ts" />
+ 
+class Utility {
+    static displayGlobalVar() {
+         
+        for (var i = 0; i < points.length; i++)
+            console.log("Точка с координатами X=" + points[i].X + " Y=" + points[i].Y);
+    }
+}
+ 
+window.onload = () => {
+     
+    Utility.displayGlobalVar();
+    
+};
+
+смотри папку "global"
+
+=================Заголовочные файлы для популярных библиотек=========
+ в сообществе TypeScript возникла идея создать общий репозиторий для
+ подобных файлов, чтобы не надо было заново определять свои файлы, а можно бы
+ было взять уже готовые. Этот репозиторий расположен на гитхабе:
+ https://github.com/DefinitelyTyped/DefinitelyTyped/
+ ==========================================================
+ Во-первых, создадим в проекте каталог Scripts, который будет предназначен для
+ хранения библиотек на javascript. Например, мы хотим использовать библиотеку
+ jquery. На данный момент это версия jquery 3.3.1.
+ Создадим в проекте каталог @types, а в нем - подкаталог jquery. То есть в итоге проект
+ будет выглядеть следующим образом:
+ -folder TypeScr
+    -folder @types
+    -folder jquery
+ -/*app.ts
+ -<> index.html
+
+В каталог @types/jquery поместим заголовочный файл для jquery - index.d.ts,
+ который можно найти по адресу
+ https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/master/types/
+ jquery/index.d.ts.
+
+В корневой папке проекта определим следующую веб-страницу index.html:
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TypeScript HTML App</title>
+</head>
+<body>
+    <h1>TypeScript HTML App</h1>
+  
+    <div id="content"></div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+================================================================
+===================================================================
+
+Здесь только подключается библиотека jquery из cdn, а также файл нашего
+приложения - app.js.
+
+Далее в корневой папке проекта определим следующий файла app.ts:
+
+.......................................................................
+    /// <reference path="@types/jquery/index.d.ts" />
+ 
+$(document).ready(() => {
+    $("#content").html("<h1>Привет мир</h1>");
+});
+.......................................................................
+В данном случае мы задействуем событие document.ready, которое определено в jquery
+и которое срабатывает при загрузке документа. И далее с помощью лямбда-выражения
+которое определяет функцию обратного вызова, с помощью знакомого многим синтаксиса
+jquery на веб-страницу добавляется новый элемент.
+
+Также мы могли бы использовать сокращенное определение функции:
+...........................................................
+$(() => {
+    $("#content").html("<h1>Привет мир</h1>");
+});
+...........................................................
+
+В итоге при запуске веб-страницы index.html сработает код из файла app.ts
+==========================================================================
+Для примера еще обработаем событие нажатия кнопки.
+ Допустим, в html-коде страницы есть такая кнопка:
+ ...............................................
+ <button id="alertBtn">Жми</button>
+ ...............................................
+ В коде на TS мы могли бы так обработать нажатия на эту кнопку:
+ ...................................................................
+ $(() => {
+    $("#alertBtn").click((e) => { $("#content").html("<h2>Привет мир</h2>"); });
+});
+ ...................................................................
+ Обработчики событий, например, click в качестве параметра также
+  принимают лямбда-выражение, которое определяет набор инструкции,
+   выполняемых при нажатии.
+*/
 //# sourceMappingURL=index.js.map
