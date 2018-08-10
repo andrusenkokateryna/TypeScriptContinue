@@ -184,6 +184,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 /*Применяя принцип наименьшего уровня привелегий, все объявления переменных, которые вы в
 дальнейшем не планируете менять, должны использовать const. Объясняется это тем, что если
 переменная
@@ -1660,5 +1669,275 @@ $(() => {
  Обработчики событий, например, click в качестве параметра также
   принимают лямбда-выражение, которое определяет набор инструкции,
    выполняемых при нажатии.
+
+   =======================Д Е К О Р А Т О Р Ы==============================
+   Декораторы являются инструментом декларативного программирования, они позволяют добавить к классам
+    и их членам метаданные и тем самым изменить их поведение без изменения их кода.
+
+Декораторы представляют функции, которые могут применяться к классам, методам, методом доступа
+(геттерам и сеттерам), свойствам, параметрам.
+
+На текущий момент декораторы являются экпериментальной функциональностью языка TypeScript,
+поэтому при компиляции следует указывать параметр experimentalDecorators. Например, через файл
+tsconfig.json:
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "experimentalDecorators": true
+    }
+}
+
+Либо через параметры в командной строке:
+
+tsc app.ts -t ES5 --experimentalDecorators
+
+..............................Декораторы классов......................
+Декоратор класса представляет функцию, которая принимает один параметр:
 */
+function classDecoratorFn(constructor) { }
+//В качестве параметра выступает конструктор класса. Например, определим простейший декоратор:
+function sealed(constructor) {
+    console.log("sealed decorator");
+    Object.seal(constructor);
+    Object.seal(constructor.prototype);
+}
+var User12 = /** @class */ (function () {
+    function User12(name) {
+        this.name = name;
+    }
+    User12.prototype.print = function () {
+        console.log(this.name);
+    };
+    User12 = __decorate([
+        sealed
+    ], User12);
+    return User12;
+}());
+/*Декоратор sealed с помощью функции Object.seal запрещает расширение прототипа класса User.
+
+Для применения декоратора используется знак @. Сам декоратор ставится перед названием класса.
+То есть из-за применения декоратора мы, к примеру, не сможем добавить в класс User новое свойство
+следующим образом:
+.........................................
+Object.defineProperty(User, 'age', {
+    value: 17
+});
+.........................................
+Также декораторы могут изменять результат работы конструктора. В этом случае определение
+функции декоратора немного меняется, но она также в качестве параметра принимает конструктор класса:
+
+*/
+function logger(target) {
+    var newConstructor = function (name) {
+        console.log("Creating new instance");
+        this.name = name;
+        this.age = 23;
+        this.print = function () {
+            console.log(this.name, this.age);
+        };
+    };
+    return newConstructor;
+}
+var User13 = /** @class */ (function () {
+    function User13(name) {
+        this.name = name;
+    }
+    User13.prototype.print = function () {
+        console.log(this.name);
+    };
+    User13 = __decorate([
+        logger
+    ], User13);
+    return User13;
+}());
+var tom10 = new User13("Tom");
+var bob = new User13("Bob");
+tom10.print();
+bob.print();
+/*В данном случае декоратор logger типизирован типом TFunction, который является
+расширением типа Function, то есть функции. По сути это тип функции конструктора.
+
+В самом декораторе передаваемый конструктор target никак не используется.
+Но создается новый конструктор. Мы предполагаем, что в конструктор будет передаваться некоторый параметр,
+ который будет называться name. Значение этого параметра передается свойству this.name = name;.
+ Также в конструкторе устанавливается новое свойство this.age и функция this.print(),
+ которая выводит на консоль значения обоих свойств.
+
+Далее декоратор применяется к классу User. У этого класса определен конструктор,
+который устанавливает свойство name. Однако поскольку мы переопределили конструктор,
+то в реальности при создании объекта User будет устанавливаться как свойство name, так и свойство age.
+ И, кроме того, будет переопределяться метод print.
+ ====================================================================================
+ ====================================================================================
+ ==================Декораторы методов и их параметров================================
+   ........................Декоратор метода....................................
+   Декоратор метода также представляет функцию, которая принимает три параметра:
+ */
+function deprecated(target, propertyName, descriptor) {
+    console.log("Method is deprecated");
+}
+/*Этот объект описывает изменение декорируемого метода. Применяется при компиляции в ES5 и выше, при ES3 имеет значение undefined.
+
+Его свойство value содержит определение функции. Свойство writable указывает, является ли функция модифицируемой (если значение true, то является).
+
+Определим простейший декоратор для метода:*/
+function readonly(target, propertyKey, descriptor) {
+    descriptor.writable = true;
+}
+;
+var User14 = /** @class */ (function () {
+    function User14(name) {
+        this.name = name;
+    }
+    User14.prototype.print = function () {
+        console.log(this.name);
+    };
+    __decorate([
+        readonly
+    ], User14.prototype, "print", null);
+    return User14;
+}());
+var tom15 = new User14("Kom");
+tom15.print = function () { console.log("print has been changed"); };
+tom15.print(); // Kom
+/*Декоратор readonly с помощью выражения descriptor.writable = false; устанавливает, что метод,
+ к которому применяется данный декоратор, не может быть изменен.
+
+В итоге после применения данного декоратора следующая инструкция
+
+
+tom.print = function(){console.log("print has been changed");}
+не имеет смысла и не будет работать. Однако если бы декоратор не применялся, то инструкция сработала бы.
+================================================================================================
+...........................Параметры и выходной результат метода................................
+Декоратор метода позволяет нам манипулировать параметрами и возвращаемым результатом метода.
+Например, определим следующий декоратор:
+*/
+function log(target, method, descriptor) {
+    var originalMethod = descriptor.value;
+    descriptor.value = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.log(JSON.stringify(args));
+        var returnValue = originalMethod.apply(this, args);
+        console.log(JSON.stringify(args) + " => " + returnValue);
+        return returnValue;
+    };
+}
+var Calculator = /** @class */ (function () {
+    function Calculator() {
+    }
+    Calculator.prototype.add = function (x, y) {
+        return x + y;
+    };
+    __decorate([
+        log
+    ], Calculator.prototype, "add", null);
+    return Calculator;
+}());
+var calc = new Calculator();
+var z = calc.add(4, 5);
+z = calc.add(6, 7);
+/*Декоратор log логгирует (выводит на консоль) значения параметров и возвращаемый результат метода.
+Свойство descriptor.value позволяет получить начальное значение метода - то есть ту функцию,
+которую представляет метод:
+let originalMethod = descriptor.value;
+Затем происходит переустановка значения descriptor.value.
+descriptor.value = function(...args){
+}
+Параметр ...args - это все те параметры, которые будут передаваться в функцию.
+ И мы можем логгировать эти параметры. Далее вызывается оригинальная функция, которой
+ передаются параметры args:
+
+
+let returnValue = originalMethod.apply(this, args);
+
+И таким образом мы можем получить результат вызова оригинальной функции и возвратить его из функции.
+То есть фактически получается, что мы берем оригинальную функцию, обертываем ее в какую-ту другую функцию,
+ в которой опять же вызываем оригинальную функцию и возвращаем ее результат.
+
+Таким образом, новое значение descriptor.value принимает те же параметры, возвращает тот же результат,
+ что и оригинальная функция, но при этом добавляет некоторое дополнительное поведение.
+
+Далее мы можем применить декоратор, например, к методу add класса Calculator и вызвать этот метод.
+=====================================================================================================
+.................................Декораторы параметров методов......................................
+=====================================================================================================
+Декоратор параметра метода представляет функцию, которая принимает три параметра:
+function MyParameterDecorator(target: Object, propertyKey: string, parameterIndex: number){
+    // код декоратора
+}
+Где первый параметр представляет конструктор класса, если метод статический, либо прототип класса,
+если метод нестатический. А второй параметр представляет имя параметра. И третий параметр
+представляет порядковый индекс параметра в списке параметров.
+
+Определим декоратор для параметра метода:
+*/
+function logParameter(target, key, index) {
+    var metadataKey = "__log_" + key + "_parameters";
+    if (Array.isArray(target[metadataKey])) {
+        target[metadataKey].push(index);
+    }
+    else {
+        target[metadataKey] = [index];
+    }
+}
+function logMethod(target, key, descriptor) {
+    var originalMethod = descriptor.value;
+    descriptor.value = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var metadataKey = "__log_" + key + "_parameters";
+        var indices = target[metadataKey];
+        if (Array.isArray(indices)) {
+            for (var i = 0; i < args.length; i++) {
+                if (indices.indexOf(i) !== -1) {
+                    var arg = args[i];
+                    var argStr = JSON.stringify(arg) || arg.toString();
+                    console.log(key + " arg[" + i + "]: " + argStr);
+                }
+            }
+            var result = originalMethod.apply(this, args);
+            return result;
+        }
+        else {
+            var a = args.map(function (a) { return (JSON.stringify(a) || a.toString()); }).join();
+            var result = originalMethod.apply(this, args);
+            var r = JSON.stringify(result);
+            console.log("Call: " + key + "(" + a + ") => " + r);
+            return result;
+        }
+    };
+    return descriptor;
+}
+var User16 = /** @class */ (function () {
+    function User16(name) {
+        this.name = name;
+    }
+    User16.prototype.setName = function (name) {
+        this.name = name;
+    };
+    User16.prototype.print = function () {
+        console.log(this.name);
+    };
+    __decorate([
+        logMethod,
+        __param(0, logParameter)
+    ], User16.prototype, "setName", null);
+    return User16;
+}());
+var tom16 = new User16("Pom");
+tom16.setName("Bob");
+tom16.setName("Sam");
+/*Декоратор logParameter добавляет в прототип класса новое свойство metadataKey.
+ Это свойство представляет массив, который содержит индексы декорированных параметров.
+
+Для чтения метаданных из свойства metadataKey применяется декоратор метода logMethod,
+который перебирает все параметры метода, находит значения параметров по индексам,
+которые определены декоратором параметроа, и выводит на консоль названия и значения
+декорированных параметров.*/ 
 //# sourceMappingURL=index.js.map
