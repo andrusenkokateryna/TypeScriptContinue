@@ -1,4 +1,3 @@
-"use strict";
 /*//=================== #1===
 
 
@@ -1939,5 +1938,166 @@ tom16.setName("Sam");
 Для чтения метаданных из свойства metadataKey применяется декоратор метода logMethod,
 который перебирает все параметры метода, находит значения параметров по индексам,
 которые определены декоратором параметроа, и выводит на консоль названия и значения
-декорированных параметров.*/ 
+декорированных параметров.
+=========================================================================================
+=========================================================================================
+======================ДЕКОРАТОРЫ СВОЙСТВ И МЕТОДОВ ДОСТУПА===============================
+............................Декораторы свойств...........................................
+Декоратор свойства представляет функцию, которая принимает два параметра:
+function MyPropertyDecorator(target: Object, propertyKey: string){
+    // код декоратора
+}
+Где первый параметр представляет конструктор класса, если свойство статическое,
+либо прототип класса, если свойство нестатическое. А второй параметр представляет имя свойства.
+
+Определим простейший декоратор для свойства:
+*/
+function format(target, propertyKey) {
+    var _val = this[propertyKey]; // получаем значение свойства
+    // геттер
+    var getter = function () {
+        return "Mr./Ms." + _val;
+    };
+    // сеттер
+    var setter = function (newVal) {
+        _val = newVal;
+    };
+    // удаляем свойство
+    if (delete this[propertyKey]) {
+        // И создаем новое свойство с геттером и сеттером
+        Object.defineProperty(target, propertyKey, {
+            get: getter,
+            set: setter
+        });
+    }
+}
+var User17 = /** @class */ (function () {
+    function User17(name) {
+        this.name = name;
+    }
+    User17.prototype.print = function () {
+        console.log(this.name);
+    };
+    __decorate([
+        format
+    ], User17.prototype, "name", void 0);
+    return User17;
+}());
+var tom17 = new User17("Tom");
+tom17.print();
+tom17.name = "Tommy";
+tom17.print();
+/*Декоратор format выполняет небольшое форматирование значение свойства.
+Для этого вначале мы получаем значение свойства. Создаем геттер, который
+возвращает отформатированное значение. Далее определяется сеттер,
+который устанавливает новое значение для свойства. И в конце удаляется старое
+свойство и создается новое с геттером и сеттером.
+
+.........................Декоратор метода доступа..........................
+Декоратор метода доступа принимает три параметра:
+
+function decorator(target: Object, propertyName: string, descriptor: PropertyDescriptor){
+    // код декоратора
+}*/
+/*Первый параметр представляет конструктора класса для статического метода, либо прототип
+ класса для обычного метода.
+
+Второй параметр представляет название метода.
+
+Третий параметр представляет объект PropertyDescriptor.
+
+Определим простейший декоратор метода доступа:*/
+/*
+function validator(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const oldSet = descriptor.set;
+ 
+    descriptor.set = function(value: string) {
+        if (value === "admin") {
+            throw new Error("Invalid value");
+        }
+ 
+        oldSet.call(this, value);
+    }
+}
+class User18 {
+ 
+    private _name: string;
+    constructor(name: string){
+        this.name = name;
+    }
+     
+    public get name(): string {
+        return this._name;
+    }
+    @validator
+    public set name(n: string) {
+        this._name = n;
+    }
+}
+let tom18 = new User18("Tom");
+tom18.name= "admin";*/
+/*console.log(tom18.name);*/
+/*Декоратор validator переопределяет поведение сеттера с помощью свойства descriptor.set.
+Если передаваемое сеттеру значение представляет строку "admin", то генерируется ошибка.
+
+Декоратор достаточно применить только к геттеру или к сеттеру, в любом случае он будет
+сразу применяться к обоим аксессорам.
+
+И, к примеру, при вызове инструкции tom.name= "admin"; мы столкнемся с ошибкой:
+Uncaught Error: Invalid value
+   at User18.descriptor.set [as name]
+   ====================================================================================
+   ====================================================================================
+   ===================ФАБРИКИ ДЕКОРАТОРОВ==============================================
+   Декоратор класса, свойства, метода представляет обычную функцию, которая принимает заданное
+   количество параметров. Но что если мы хотим передавать в декоратор какие-то дополнительные данные,
+   которые могут быть известны только при применении декоратора? В этом случае мы можем сконструировать
+   фабрику декораторов (factory decorator). Фабрика декоратора представляет функцию,
+   которая в свою очерель возвращает функцию декоратора.
+
+Например, определим протейшую функцию декоратора:
+    */
+function regex(pattern) {
+    var expression = new RegExp(pattern);
+    return function regex(target, propertyName) {
+        var propertyValue = this[propertyName];
+        // геттер
+        var getter = function () {
+            return propertyValue;
+        };
+        // сеттер
+        var setter = function (newVal) {
+            var isValid = expression.test(newVal);
+            if (isValid === false) {
+                throw new Error("Value " + newVal + " does not match " + pattern);
+            }
+            else {
+                console.log(newVal + " is valid");
+            }
+        };
+        // удаляем свойство
+        if (delete this[propertyName]) {
+            // И создаем новое свойство с геттером и сеттером
+            Object.defineProperty(target, propertyName, {
+                get: getter,
+                set: setter
+            });
+        }
+    };
+}
+var Account = /** @class */ (function () {
+    function Account(email, phone) {
+        this.email = email;
+        this.phone = phone;
+    }
+    __decorate([
+        regex("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+    ], Account.prototype, "email", void 0);
+    __decorate([
+        regex("^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$")
+    ], Account.prototype, "phone", void 0);
+    return Account;
+}());
+var acc = new Account("bir@gmail.com", "+23451235678");
+acc.email = "bir_iki_yedi";
 //# sourceMappingURL=index.js.map

@@ -1,4 +1,3 @@
-"use strict";
 /// <reference path="globals.d.ts" />
 var Utility = /** @class */ (function () {
     function Utility() {

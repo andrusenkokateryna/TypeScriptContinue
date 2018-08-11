@@ -1,4 +1,3 @@
-"use strict";
 /// <reference path="@types/jquery/index.d.ts" />
 /*$(document).ready(function () {
 alert("hello from jquery!");
